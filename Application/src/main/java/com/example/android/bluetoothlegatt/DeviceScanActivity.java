@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
@@ -192,6 +193,19 @@ public class DeviceScanActivity extends ListActivity {
         startActivity(intent);
     }
 
+    protected void addDevice() {
+        final BluetoothDevice device = mLeDeviceListAdapter.getDevice(0);
+        if (device == null) return;
+        final Intent intent = new Intent(this, DeviceControlActivity.class);
+        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
+        intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
+        if (mScanning) {
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mScanning = false;
+        }
+        startActivity(intent);
+    }
+
     private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
@@ -205,7 +219,9 @@ public class DeviceScanActivity extends ListActivity {
             }, SCAN_PERIOD);
 
             mScanning = true;
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+
+            UUID[] serviceUuids = {UUID.fromString(SampleGattAttributes.HEART_RATE_SERVICE)};
+            mBluetoothAdapter.startLeScan(serviceUuids, mLeScanCallback);
         } else {
             mScanning = false;
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
@@ -289,7 +305,8 @@ public class DeviceScanActivity extends ListActivity {
                 @Override
                 public void run() {
                     mLeDeviceListAdapter.addDevice(device);
-                    mLeDeviceListAdapter.notifyDataSetChanged();
+                    addDevice();
+//                    mLeDeviceListAdapter.notifyDataSetChanged();
                 }
             });
         }

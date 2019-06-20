@@ -2491,11 +2491,12 @@ public final class R {
     public static final int title_template=0x7f07007c;
     public static final int top=0x7f07007d;
     public static final int topPanel=0x7f07007e;
-    public static final int uniform=0x7f07007f;
-    public static final int up=0x7f070080;
-    public static final int useLogo=0x7f070081;
-    public static final int withText=0x7f070082;
-    public static final int wrap_content=0x7f070083;
+    public static final int tvLocation=0x7f07007f;
+    public static final int uniform=0x7f070080;
+    public static final int up=0x7f070081;
+    public static final int useLogo=0x7f070082;
+    public static final int withText=0x7f070083;
+    public static final int wrap_content=0x7f070084;
   }
   public static final class integer {
     public static final int abc_config_activityDefaultDur=0x7f080000;
@@ -2598,17 +2599,18 @@ public final class R {
     public static final int label_data=0x7f0b0023;
     public static final int label_device_address=0x7f0b0024;
     public static final int label_state=0x7f0b0025;
-    public static final int menu_connect=0x7f0b0026;
-    public static final int menu_disconnect=0x7f0b0027;
-    public static final int menu_scan=0x7f0b0028;
-    public static final int menu_stop=0x7f0b0029;
-    public static final int no_data=0x7f0b002a;
-    public static final int search_menu_title=0x7f0b002b;
-    public static final int status_bar_notification_info_overflow=0x7f0b002c;
-    public static final int title_devices=0x7f0b002d;
-    public static final int unknown_characteristic=0x7f0b002e;
-    public static final int unknown_device=0x7f0b002f;
-    public static final int unknown_service=0x7f0b0030;
+    public static final int location_label=0x7f0b0026;
+    public static final int menu_connect=0x7f0b0027;
+    public static final int menu_disconnect=0x7f0b0028;
+    public static final int menu_scan=0x7f0b0029;
+    public static final int menu_stop=0x7f0b002a;
+    public static final int no_data=0x7f0b002b;
+    public static final int search_menu_title=0x7f0b002c;
+    public static final int status_bar_notification_info_overflow=0x7f0b002d;
+    public static final int title_devices=0x7f0b002e;
+    public static final int unknown_characteristic=0x7f0b002f;
+    public static final int unknown_device=0x7f0b0030;
+    public static final int unknown_service=0x7f0b0031;
   }
   public static final class style {
     public static final int AlertDialog_AppCompat=0x7f0c0000;

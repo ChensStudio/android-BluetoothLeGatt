@@ -265,6 +265,7 @@
     <string name="label_data">Data:</string>
     <string name="label_device_address">Device address:</string>
     <string name="label_state">State:</string>
+    <string name="location_label">Sensor Location:</string>
     <string name="menu_connect">Connect</string>
     <string name="menu_disconnect">Disconnect</string>
     <string name="menu_scan">Scan</string>

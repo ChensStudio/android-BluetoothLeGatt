@@ -717,6 +717,7 @@ id titleDividerNoCustom
 id title_template
 id top
 id topPanel
+id tvLocation
 id uniform
 id up
 id useLogo
@@ -816,6 +817,7 @@ string intro_message
 string label_data
 string label_device_address
 string label_state
+string location_label
 string menu_connect
 string menu_disconnect
 string menu_scan

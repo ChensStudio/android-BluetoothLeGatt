@@ -16,6 +16,8 @@
 
 package com.example.android.bluetoothlegatt;
 
+import android.bluetooth.BluetoothGattCharacteristic;
+
 import java.util.HashMap;
 
 /**
@@ -23,7 +25,9 @@ import java.util.HashMap;
  */
 public class SampleGattAttributes {
     private static HashMap<String, String> attributes = new HashMap();
+    public static String HEART_RATE_SERVICE = "0000180d-0000-1000-8000-00805f9b34fb";
     public static String HEART_RATE_MEASUREMENT = "00002a37-0000-1000-8000-00805f9b34fb";
+    public static String BODY_SENSOR_LOCATION = "00002a38-0000-1000-8000-00805f9b34fb";
     public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
 
     static {
@@ -32,11 +36,29 @@ public class SampleGattAttributes {
         attributes.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
         // Sample Characteristics.
         attributes.put(HEART_RATE_MEASUREMENT, "Heart Rate Measurement");
+        attributes.put(BODY_SENSOR_LOCATION, "Sensor Location");
         attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
     }
 
     public static String lookup(String uuid, String defaultName) {
         String name = attributes.get(uuid);
         return name == null ? defaultName : name;
+    }
+
+    public static String location(BluetoothGattCharacteristic characteristic){
+        byte[] characteristicData= characteristic.getValue();
+        byte first = characteristicData[0];
+
+        switch(first){
+            case 0: return "Other";
+            case 1: return "Chest";
+            case 2: return "Wrist";
+            case 3: return "Finger";
+            case 4: return "Hand";
+            case 5: return "Ear Lobe";
+            case 6: return "Foot";
+            default:
+                return "Reserved for future use";
+        }
     }
 }

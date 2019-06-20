@@ -62,9 +62,17 @@ public class BluetoothLeService extends Service {
             "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA =
             "com.example.bluetooth.le.EXTRA_DATA";
+    public final static String EXTRA_DATA1 =
+            "com.example.bluetooth.le.EXTRA_DATA1";
+
+    public final static UUID UUID_HEART_RATE_SERVICE =
+            UUID.fromString(SampleGattAttributes.HEART_RATE_SERVICE);
 
     public final static UUID UUID_HEART_RATE_MEASUREMENT =
             UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
+
+    public final static UUID UUID_BODY_SENSOR_LOCATION =
+            UUID.fromString(SampleGattAttributes.BODY_SENSOR_LOCATION);
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -139,16 +147,20 @@ public class BluetoothLeService extends Service {
             final int heartRate = characteristic.getIntValue(format, 1);
             Log.d(TAG, String.format("Received heart rate: %d", heartRate));
             intent.putExtra(EXTRA_DATA, String.valueOf(heartRate));
-        } else {
-            // For all other profiles, writes the data formatted in HEX.
-            final byte[] data = characteristic.getValue();
-            if (data != null && data.length > 0) {
-                final StringBuilder stringBuilder = new StringBuilder(data.length);
-                for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
-            }
         }
+        else if (UUID_BODY_SENSOR_LOCATION.equals(characteristic.getUuid())){
+            intent.putExtra(EXTRA_DATA1, SampleGattAttributes.location(characteristic));
+        }
+//        else {
+//            // For all other profiles, writes the data formatted in HEX.
+//            final byte[] data = characteristic.getValue();
+//            if (data != null && data.length > 0) {
+//                final StringBuilder stringBuilder = new StringBuilder(data.length);
+//                for(byte byteChar : data)
+//                    stringBuilder.append(String.format("%02X ", byteChar));
+//                intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
+//            }
+//        }
         sendBroadcast(intent);
     }
 
@@ -315,5 +327,11 @@ public class BluetoothLeService extends Service {
         if (mBluetoothGatt == null) return null;
 
         return mBluetoothGatt.getServices();
+    }
+
+    public BluetoothGattService getSupportedGattService() {
+        if (mBluetoothGatt == null) return null;
+
+        return mBluetoothGatt.getService(UUID_HEART_RATE_SERVICE);
     }
 }
