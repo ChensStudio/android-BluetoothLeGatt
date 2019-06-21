@@ -25,20 +25,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
+import android.widget.SeekBar;
 import android.widget.SimpleExpandableListAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -59,6 +65,11 @@ public class DeviceControlActivity extends Activity {
     private String mDeviceAddress;
     private ExpandableListView mGattServicesList;
     private BluetoothLeService mBluetoothLeService;
+    private SeekBar minBar;
+    private SeekBar maxBar;
+    private TextView tvMin;
+    private TextView tvMax;
+    private Switch switchAlarm;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     private boolean mConnected = false;
@@ -66,6 +77,24 @@ public class DeviceControlActivity extends Activity {
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
+
+    private static final int MIN_SEEK_BAR_MIN = 60;
+    private static final int MIN_SEEK_BAR_MAX = 120;
+    private static final int MAX_SEEK_BAR_MIN = 80;
+    private static final int MAX_SEEK_BAR_MAX = 180;
+    private static final int MIN_SEEK_BAR_DEFAULT = 80;
+    private static final int MAX_SEEK_BAR_DEFAULT = 140;
+
+    private static final String MIN_HEART_RATE_KEY = "MIN_HEART_RATE";
+    private static final String MAX_HEART_RATE_KEY = "MAX_HEART_RATE";
+    private static final String ALARM_KEY = "ALARM_ON";
+
+    private Context context;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+    private int minHeartRate;
+    private int maxHeartRate;
+    private boolean alarmOn;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -112,6 +141,17 @@ public class DeviceControlActivity extends Activity {
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
 
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                int heartRate =  Integer.parseInt(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                if ((heartRate < minHeartRate || heartRate > maxHeartRate) && alarmOn){
+                    try {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                        r.play();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
                 displayData1(intent.getStringExtra(BluetoothLeService.EXTRA_DATA1));
             }
@@ -162,6 +202,14 @@ public class DeviceControlActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = getApplicationContext();
+        preferences = context.getSharedPreferences("HeartRateMonitorPref", Context.MODE_PRIVATE);
+        editor = preferences.edit();
+        minHeartRate = preferences.getInt(MIN_HEART_RATE_KEY, MIN_SEEK_BAR_DEFAULT);
+        maxHeartRate = preferences.getInt(MAX_HEART_RATE_KEY, MAX_SEEK_BAR_DEFAULT);
+        alarmOn = preferences.getBoolean(ALARM_KEY, true);
+
         setContentView(R.layout.gatt_services_characteristics);
 
         final Intent intent = getIntent();
@@ -175,6 +223,42 @@ public class DeviceControlActivity extends Activity {
         mConnectionState = (TextView) findViewById(R.id.connection_state);
         mDataField = (TextView) findViewById(R.id.data_value);
         mDataField1 = (TextView) findViewById(R.id.tvLocation);
+
+        switchAlarm = (Switch) findViewById(R.id.switchAlarm);
+        switchAlarm.setChecked(alarmOn);
+        switchAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    alarmOn = true;
+                }
+                else {
+                    alarmOn = false;
+                }
+                preferences = context.getSharedPreferences("HeartRateMonitorPref", Context.MODE_PRIVATE);
+                editor = preferences.edit();
+                editor.putBoolean(ALARM_KEY, alarmOn);
+                editor.commit();
+            }
+        });
+
+        //seekbar
+        minBar = ((SeekBar) findViewById(R.id.sbMin));
+        minBar.setMin(MIN_SEEK_BAR_MIN);
+        minBar.setMax(MIN_SEEK_BAR_MAX);
+        minBar.setProgress(minHeartRate);
+        tvMin = ((TextView) findViewById(R.id.txMin));
+        tvMin.setText(Integer.toString(minHeartRate));
+        minBar.setOnSeekBarChangeListener(new minBarListener());
+
+        maxBar = ((SeekBar) findViewById(R.id.sbMax));
+        maxBar.setMin(MAX_SEEK_BAR_MIN);
+        maxBar.setMax(MAX_SEEK_BAR_MAX);
+        maxBar.setProgress(maxHeartRate);
+        tvMax = ((TextView) findViewById(R.id.txMax));
+        tvMax.setText(Integer.toString(maxHeartRate));
+        maxBar.setOnSeekBarChangeListener(new maxBarListener());
+
 
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -328,4 +412,49 @@ public class DeviceControlActivity extends Activity {
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
+
+
+    private class minBarListener implements SeekBar.OnSeekBarChangeListener {
+
+        public void onProgressChanged(SeekBar seekBar, int progress,
+                                      boolean fromUser) {
+            // Log the progress
+            Log.d("DEBUG", "Min is: "+progress);
+            //set textView's text
+            minHeartRate = progress;
+//            preferences = context.getSharedPreferences("HeartRateMonitorPref", Context.MODE_PRIVATE);
+//            editor = preferences.edit();
+            editor.putInt(MIN_HEART_RATE_KEY, minHeartRate);
+            editor.commit();
+            tvMin.setText(""+minHeartRate);
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+
+        public void onStopTrackingTouch(SeekBar seekBar) {}
+
+    }
+
+    private class maxBarListener implements SeekBar.OnSeekBarChangeListener {
+
+        public void onProgressChanged(SeekBar seekBar, int progress,
+                                      boolean fromUser) {
+            // Log the progress
+            Log.d("DEBUG", "Max is: "+progress);
+            //set textView's text
+            maxHeartRate = progress;
+//            preferences = context.getSharedPreferences("HeartRateMonitorPref", Context.MODE_PRIVATE);
+//            editor = preferences.edit();
+            editor.putInt(MAX_HEART_RATE_KEY, maxHeartRate);
+            editor.commit();
+            tvMax.setText(""+maxHeartRate);
+        }
+
+        public void onStartTrackingTouch(SeekBar seekBar) {}
+
+        public void onStopTrackingTouch(SeekBar seekBar) {}
+
+    }
+
+
 }

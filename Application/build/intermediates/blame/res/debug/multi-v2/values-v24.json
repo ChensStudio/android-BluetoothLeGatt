@@ -4,17 +4,7 @@
             "outputFile": "/Users/ychen/myprojects/android-BluetoothLeGatt/Application/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v24/values-v24.xml",
             "map": [
                 {
-                    "source": "/Users/ychen/.gradle/caches/transforms-2/files-2.1/3d3c5e88ae1b12960a290cb6a93d2399/res/values-v24/values-v24.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,212",
-                        "endColumns": "156,134",
-                        "endOffsets": "207,342"
-                    }
-                },
-                {
-                    "source": "/Users/ychen/.gradle/caches/transforms-2/files-2.1/620613d752b448863fea4c719691016c/res/values-v24/values-v24.xml",
+                    "source": "/Users/ychen/.gradle/caches/transforms-2/files-2.1/4e78b6eb23c97eea5c2e42d191f7c927/res/values-v24/values-v24.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",
@@ -28,6 +18,16 @@
                         "startOffsets": "347,413,474,540",
                         "endColumns": "65,60,65,66",
                         "endOffsets": "408,469,535,602"
+                    }
+                },
+                {
+                    "source": "/Users/ychen/.gradle/caches/transforms-2/files-2.1/39f48429e13b993eedb7645829b38590/res/values-v24/values-v24.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,212",
+                        "endColumns": "156,134",
+                        "endOffsets": "207,342"
                     }
                 }
             ]

@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.bluetoothlegatt.test" >
+    package="com.example.android.bluetoothlegatt.test">
 
-    <uses-sdk
-        android:minSdkVersion="18"
-        android:targetSdkVersion="28" />
-
-    <instrumentation
-        android:name="com.android.test.runner.MultiDexTestRunner"
-        android:functionalTest="false"
-        android:handleProfiling="false"
-        android:label="Tests for com.example.android.bluetoothlegatt"
-        android:targetPackage="com.example.android.bluetoothlegatt" />
+    <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="28" />
 
     <application android:debuggable="true" >
         <uses-library android:name="android.test.runner" />
     </application>
 
+    <instrumentation android:name="android.test.InstrumentationTestRunner"
+                     android:targetPackage="com.example.android.bluetoothlegatt"
+                     android:handleProfiling="false"
+                     android:functionalTest="false"
+                     android:label="Tests for com.example.android.bluetoothlegatt"/>
 </manifest>

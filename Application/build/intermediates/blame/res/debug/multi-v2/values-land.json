@@ -4,13 +4,13 @@
             "outputFile": "/Users/ychen/myprojects/android-BluetoothLeGatt/Application/build/intermediates/incremental/mergeDebugResources/merged.dir/values-land/values-land.xml",
             "map": [
                 {
-                    "source": "/Users/ychen/.gradle/caches/transforms-2/files-2.1/3d3c5e88ae1b12960a290cb6a93d2399/res/values-land/values-land.xml",
+                    "source": "/Users/ychen/.gradle/caches/transforms-2/files-2.1/39f48429e13b993eedb7645829b38590/res/values-land/values-land.xml",
                     "from": {
-                        "startLines": "2,3,4,5",
-                        "startColumns": "4,4,4,4",
-                        "startOffsets": "55,125,189,260",
-                        "endColumns": "69,63,70,67",
-                        "endOffsets": "120,184,255,323"
+                        "startLines": "2,3,4",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,125,196",
+                        "endColumns": "69,70,67",
+                        "endOffsets": "120,191,259"
                     }
                 }
             ]
